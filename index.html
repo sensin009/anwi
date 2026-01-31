@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>For Anwi 💘</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at top, #ffb6c9 0, #ff4b8b 40%, #39004d 100%);
+      color: #1a1a1a;
+    }
+
+    .card {
+      position: relative;
+      background: #ffffffee;
+      border-radius: 24px;
+      padding: 32px 28px 40px;
+      max-width: 420px;
+      width: 90%;
+      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.25);
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: "❤";
+      position: absolute;
+      font-size: 120px;
+      opacity: 0.06;
+      top: -30px;
+      right: -10px;
+      pointer-events: none;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 12px;
+    }
+
+    .subtitle {
+      font-size: 0.95rem;
+      color: #555;
+      margin-bottom: 24px;
+    }
+
+    .buttons-wrapper {
+      position: relative;
+      height: 120px; /* gives the No button space to run */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    button {
+      border: none;
+      border-radius: 999px;
+      padding: 10px 26px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease,
+        background 0.15s ease, color 0.15s ease;
+      white-space: nowrap;
+    }
+
+    #yesBtn {
+      background: linear-gradient(135deg, #ff4b8b, #ff7eb3);
+      color: #fff;
+      box-shadow: 0 8px 18px rgba(255, 75, 139, 0.4);
+      font-weight: 600;
+    }
+
+    #yesBtn:hover {
+      transform: translateY(-1px) scale(1.03);
+      box-shadow: 0 12px 24px rgba(255, 75, 139, 0.5);
+    }
+
+    #noBtn {
+      background: #f1f1f1;
+      color: #555;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+      position: absolute; /* so we can move it around */
+    }
+
+    #noBtn:hover {
+      transform: translateY(-1px);
+    }
+
+    .hint {
+      margin-top: 8px;
+      font-size: 0.8rem;
+      color: #777;
+    }
+
+    /* “Yes” state */
+    .big-yes {
+      font-size: 2.2rem;
+      margin-bottom: 10px;
+    }
+
+    .yes-message {
+      font-size: 1rem;
+      margin-bottom: 20px;
+    }
+
+    .hearts {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .heart {
+      position: absolute;
+      font-size: 18px;
+      animation: floatUp 4s linear infinite;
+      opacity: 0.9;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(20px) scale(1);
+        opacity: 0;
+      }
+      10% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-160px) scale(1.4);
+        opacity: 0;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .card {
+        padding: 24px 18px 32px;
+      }
+
+      h1 {
+        font-size: 1.7rem;
+      }
+
+      .buttons-wrapper {
+        height: 140px;
+        flex-direction: column;
+      }
+
+      button {
+        width: auto;
+        padding-inline: 22px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="card" id="card">
+    <h1>Hey Anwi 💕</h1>
+    <p class="subtitle">
+      Ankit has a question for you...<br />
+      <strong>Will you be my Valentine?</strong>
+    </p>
+
+    <div class="buttons-wrapper" id="buttonsWrapper">
+      <button id="yesBtn">Yes, Ankit 💖</button>
+      <button id="noBtn">No 😅</button>
+    </div>
+    <p class="hint">(Try pressing “No” if you dare…)</p>
+  </div>
+
+  <script>
+    const yesBtn = document.getElementById("yesBtn");
+    const noBtn = document.getElementById("noBtn");
+    const card = document.getElementById("card");
+    const buttonsWrapper = document.getElementById("buttonsWrapper");
+
+    // Initial position for No button roughly opposite Yes
+    function placeNoButtonCenter() {
+      const wrapperRect = buttonsWrapper.getBoundingClientRect();
+      const yesRect = yesBtn.getBoundingClientRect();
+      const noRect = noBtn.getBoundingClientRect();
+
+      const relativeX =
+        wrapperRect.width / 2 + yesRect.width / 2 + 12 - noRect.width / 2;
+      const relativeY = wrapperRect.height / 2 - noRect.height / 2;
+
+      noBtn.style.left = relativeX + "px";
+      noBtn.style.top = relativeY + "px";
+    }
+
+    function moveNoButton() {
+      const wrapperRect = buttonsWrapper.getBoundingClientRect();
+      const noRect = noBtn.getBoundingClientRect();
+
+      const padding = 10;
+
+      const maxX = wrapperRect.width - noRect.width - padding;
+      const maxY = wrapperRect.height - noRect.height - padding;
+
+      let newX = Math.random() * maxX + padding;
+      let newY = Math.random() * maxY + padding;
+
+      // Small nudge so it doesn't sit exactly where it was
+      const currentLeft = parseFloat(noBtn.style.left || "0");
+      const currentTop = parseFloat(noBtn.style.top || "0");
+
+      if (Math.abs(newX - currentLeft) < 40) {
+        newX = (newX + wrapperRect.width / 3) % maxX;
+      }
+      if (Math.abs(newY - currentTop) < 30) {
+        newY = (newY + wrapperRect.height / 3) % maxY;
+      }
+
+      noBtn.style.left = newX + "px";
+      noBtn.style.top = newY + "px";
+    }
+
+    // Move "No" on hover, focus, or click
+    ["mouseenter", "mouseover", "focus", "click", "touchstart"].forEach(
+      (eventName) => {
+        noBtn.addEventListener(eventName, (e) => {
+          e.preventDefault();
+          moveNoButton();
+        });
+      }
+    );
+
+    // When she clicks "Yes" 💘
+    yesBtn.addEventListener("click", () => {
+      card.innerHTML = `
+        <div class="hearts" id="hearts"></div>
+        <div>
+          <p class="big-yes">Yay! 🥰</p>
+          <p class="yes-message">
+            Anwi said <strong>YES</strong> to Ankit!<br/>
+            This is now an officially binding Valentine’s agreement. 💌
+          </p>
+          <p>Screenshot this as proof. 😉</p>
+        </div>
+      `;
+
+      startHearts();
+    });
+
+    function startHearts() {
+      const heartsContainer = document.getElementById("hearts");
+      const symbols = ["❤", "💖", "💕", "💘", "💗"];
+
+      function createHeart() {
+        if (!heartsContainer) return;
+        const heart = document.createElement("span");
+        heart.className = "heart";
+        heart.textContent =
+          symbols[Math.floor(Math.random() * symbols.length)];
+        const containerRect = heartsContainer.getBoundingClientRect();
+        const x = Math.random() * containerRect.width;
+        const delay = Math.random() * 2;
+
+        heart.style.left = x + "px";
+        heart.style.bottom = "-20px";
+        heart.style.animationDelay = delay + "s";
+
+        heartsContainer.appendChild(heart);
+
+        setTimeout(() => {
+          heart.remove();
+        }, 5000);
+      }
+
+      // Create hearts regularly
+      for (let i = 0; i < 18; i++) {
+        setTimeout(createHeart, i * 200);
+      }
+      setInterval(createHeart, 700);
+    }
+
+    // Place No button after layout is ready
+    window.addEventListener("load", placeNoButtonCenter);
+    window.addEventListener("resize", placeNoButtonCenter);
+  </script>
+</body>
+</html>
